@@ -1,0 +1,16 @@
+baseURL = 'https://oyparaploo.com'
+languageCode = 'en-us'
+title = 'Oyparaploo'
+
+[params]
+  description = 'Beautiful Garbage since 1995'
+  location = 'Minneapolis'
+  imageBase = 'https://images.oyparaploo.com'
+
+[taxonomies]
+  tag = 'tags'
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
