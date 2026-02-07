@@ -553,5 +553,10 @@ document.querySelectorAll('.section-arrows').forEach(arrows => {
   });
 });
 </script>
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sw.js");
+}
+</script>
 </body>
 </html>

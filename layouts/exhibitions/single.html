@@ -923,5 +923,10 @@ document.querySelectorAll('.tab-nav a').forEach(tab => {
   });
 });
 </script>
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sw.js");
+}
+</script>
 </body>
 </html>

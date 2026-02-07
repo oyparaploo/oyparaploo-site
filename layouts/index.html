@@ -1118,5 +1118,10 @@ if (mobileCta && hero) {
   observer.observe(hero);
 }
 </script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js');
+}
+</script>
 </body>
 </html>

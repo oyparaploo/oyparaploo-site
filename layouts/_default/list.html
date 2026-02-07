@@ -15,5 +15,10 @@
 {{ range .Pages }}
 <a href="{{ .RelPermalink }}">{{ .Title }}</a>
 {{ end }}
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/sw.js");
+}
+</script>
 </body>
 </html>
