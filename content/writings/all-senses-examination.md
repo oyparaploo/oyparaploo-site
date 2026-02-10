@@ -1,0 +1,56 @@
+---
+title: "All Senses Examination of This Aromous Soil"
+slug: "all-senses-examination"
+date: 2026-02-10T01:15:00-06:00
+category: "Witness"
+date_display: "February 2026"
+author: "Oyparaploo"
+methodology: "Wonderful Garbage"
+style: "Noir Song"
+---
+
+We all exist on significant land. wide open. flat and mountainous. to human build up. structured infrastructure.
+
+The way some politicians perceive is not a good sensing care for the soil underneath. for the soil under our feet.
+
+Intuitive visions at best are infinite. each culture caravans and diverse caravans through history. there have been a wide span of differences of impacts to natural environments.
+
+We are now experiencing so many more extreme fatal weather behaviors.
+
+We will not be a downer. and go further. but just want to state that these are new realities.
+
+. . .
+
+Lassitude caused by virtual social media sites versus joy creating human energy.
+
+Take a break from your phone and computer and go to a physical real place. then dig there. then examine over land. archaeological findings from under the sacred grounds.
+
+When we think about it more often. grounds everywhere are sacred. and if not. should be. and cared for. for future generations. all of our collective future new born Earthlings.
+
+. . .
+
+The battle may be last but never the war.
+
+To talk about contracts. every night you have a contract. if you are not going to take advantage of your privilege I think we need to respect.
+
+But you are Him in spirit.
+
+This is not cowardice. I think you need to respect my expertise.
+
+Never mind what you will read in the newspapers. to give impartial advice. if you could be impartial with me. it would not hurt my feelings. you know this.
+
+Divisions are the best moving feet.
+
+. . .
+
+We have not failed. this condition is not forever and not permanent.
+
+No condition is permanent is something our people say.
+
+Scouring against hortensis long bent legs and scarred bare feet. she never worshipped.
+
+Your feet were calloused to a hardness that was close to leather.
+
+She could walk across any surface.
+
+You must know who you are always.
