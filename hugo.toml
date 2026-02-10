@@ -1,3 +1,4 @@
+buildFuture = true
 baseURL = 'https://oyparaploo.com'
 languageCode = 'en-us'
 title = 'Oyparaploo'
