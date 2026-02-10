@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192x192.png">
+  <link rel="apple-touch-icon" href="/icon-192x192.png">
+  <title>Writings — {{ .Site.Title }}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --sans: 'Sora', sans-serif;
+      --serif-title: 'Lora', Georgia, serif;
+      --black: #000000;
+      --white: #ffffff;
+      --gray-dark: #333333;
+      --gray-mid: #666666;
+      --gray-light: #999999;
+      --gray-rule: #e0e0e0;
+      --gray-bg: #f5f5f5;
+      --accent: #E63326;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--sans);
+      background-color: var(--white);
+      color: var(--black);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Nav */
+    .site-nav {
+      padding: 24px 40px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      border-bottom: 1px solid var(--gray-rule);
+    }
+    .site-nav a {
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-mid);
+      text-decoration: none;
+      letter-spacing: 0.5px;
+      transition: color 0.2s;
+    }
+    .site-nav a:hover { color: var(--black); }
+    .site-nav .nav-home {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--black);
+      letter-spacing: -0.3px;
+    }
+    .site-nav .nav-current { color: var(--black); }
+
+    /* Page container */
+    .page-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 80px 24px 120px;
+    }
+
+    /* Page header */
+    .page-title {
+      font-family: var(--sans);
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--black);
+      margin-bottom: 8px;
+      letter-spacing: -1px;
+    }
+    .page-subtitle {
+      font-family: var(--sans);
+      font-size: 14px;
+      color: var(--gray-light);
+      margin-bottom: 64px;
+      letter-spacing: 0.3px;
+    }
+
+    /* Category sections */
+    .category-section {
+      margin-bottom: 56px;
+    }
+    .category-heading {
+      font-family: var(--sans);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--gray-rule);
+      margin-bottom: 20px;
+    }
+    .category-count {
+      color: var(--gray-light);
+      font-weight: 400;
+    }
+
+    /* Writings list */
+    .writings-list {
+      list-style: none;
+    }
+    .writings-list li {
+      margin-bottom: 6px;
+    }
+    .writings-list a {
+      font-family: var(--serif-title);
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--gray-dark);
+      text-decoration: none;
+      transition: color 0.2s;
+      line-height: 1.6;
+    }
+    .writings-list a:hover {
+      color: var(--accent);
+    }
+
+    /* Footer */
+    .site-footer {
+      padding: 40px;
+      border-top: 1px solid var(--gray-rule);
+      text-align: center;
+      font-family: var(--sans);
+      font-size: 12px;
+      color: var(--gray-light);
+      letter-spacing: 0.5px;
+    }
+
+    @media (max-width: 600px) {
+      .site-nav { padding: 16px 20px; gap: 20px; }
+      .page-container { padding: 48px 20px 80px; }
+      .page-title { font-size: 36px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-nav">
+    <a href="/" class="nav-home">OyPARáPLoO!</a>
+    <a href="/writings/" class="nav-current">Writings</a>
+    <a href="/exhibitions/">Exhibitions</a>
+  </nav>
+
+  <div class="page-container">
+    <h1 class="page-title">Writings</h1>
+    <p class="page-subtitle">{{ len .Pages }} pieces — Wonderful Garbage — Noir Song</p>
+
+    {{ $categories := slice "Witness" "Declaration" "Origin" "Lovely Quiet Trash" "Ground Witness" "Conversation" "Woven Methodology" }}
+
+    {{ range $cat := $categories }}
+      {{ $pages := where $.Pages "Params.category" $cat }}
+      {{ if $pages }}
+      <div class="category-section">
+        <h2 class="category-heading">{{ $cat }} <span class="category-count">({{ len $pages }})</span></h2>
+        <ul class="writings-list">
+          {{ range $pages }}
+          <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+          {{ end }}
+        </ul>
+      </div>
+      {{ end }}
+    {{ end }}
+  </div>
+
+  <footer class="site-footer">
+    OyPARáPLoO! — Beautiful Garbage since 1995
+  </footer>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js");
+    }
+  </script>
+</body>
+</html>

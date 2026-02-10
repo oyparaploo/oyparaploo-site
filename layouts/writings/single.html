@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#000000">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192x192.png">
+  <link rel="apple-touch-icon" href="/icon-192x192.png">
+  <title>{{ .Title }} — {{ .Site.Title }}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=Source+Serif+Pro:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --sans: 'Sora', sans-serif;
+      --serif-title: 'Lora', Georgia, serif;
+      --serif-body: 'Source Serif Pro', Georgia, serif;
+      --black: #000000;
+      --white: #ffffff;
+      --gray-dark: #333333;
+      --gray-mid: #666666;
+      --gray-light: #999999;
+      --gray-rule: #e0e0e0;
+      --gray-bg: #f5f5f5;
+      --accent: #E63326;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--sans);
+      background-color: var(--white);
+      color: var(--black);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Nav */
+    .site-nav {
+      padding: 24px 40px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      border-bottom: 1px solid var(--gray-rule);
+    }
+    .site-nav a {
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-mid);
+      text-decoration: none;
+      letter-spacing: 0.5px;
+      transition: color 0.2s;
+    }
+    .site-nav a:hover { color: var(--black); }
+    .site-nav .nav-home {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--black);
+      letter-spacing: -0.3px;
+    }
+    .site-nav .nav-current { color: var(--black); }
+
+    /* Writing container */
+    .writing-container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 80px 24px 120px;
+    }
+
+    /* Back link */
+    .back-link {
+      display: inline-block;
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray-light);
+      text-decoration: none;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 48px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--black); }
+    .back-link::before { content: '← '; }
+
+    /* Title */
+    .writing-title {
+      font-family: var(--serif-title);
+      font-size: 42px;
+      font-weight: 500;
+      color: var(--black);
+      line-height: 1.2;
+      margin-bottom: 48px;
+      letter-spacing: -0.5px;
+    }
+
+    /* Body */
+    .writing-body {
+      font-family: var(--serif-body);
+      font-size: 19px;
+      line-height: 1.9;
+      color: var(--gray-dark);
+    }
+    .writing-body p {
+      margin-bottom: 1.5em;
+    }
+
+    /* Metadata footer */
+    .writing-meta {
+      margin-top: 80px;
+      padding-top: 32px;
+      border-top: 1px solid var(--gray-rule);
+      font-family: var(--sans);
+      font-size: 13px;
+      color: var(--gray-light);
+      letter-spacing: 0.5px;
+    }
+    .writing-meta .meta-row {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .writing-meta .meta-label {
+      color: var(--gray-mid);
+      font-weight: 500;
+    }
+
+    /* Category tag */
+    .category-tag {
+      display: inline-block;
+      font-family: var(--sans);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    /* Footer */
+    .site-footer {
+      padding: 40px;
+      border-top: 1px solid var(--gray-rule);
+      text-align: center;
+      font-family: var(--sans);
+      font-size: 12px;
+      color: var(--gray-light);
+      letter-spacing: 0.5px;
+    }
+
+    @media (max-width: 600px) {
+      .site-nav { padding: 16px 20px; gap: 20px; }
+      .writing-container { padding: 48px 20px 80px; }
+      .writing-title { font-size: 32px; }
+      .writing-body { font-size: 17px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="site-nav">
+    <a href="/" class="nav-home">OyPARáPLoO!</a>
+    <a href="/writings/" class="nav-current">Writings</a>
+    <a href="/exhibitions/">Exhibitions</a>
+  </nav>
+
+  <article class="writing-container">
+    <a href="/writings/" class="back-link">Writings</a>
+
+    {{ with .Params.category }}<span class="category-tag">{{ . }}</span>{{ end }}
+    <h1 class="writing-title">{{ .Title }}</h1>
+
+    <div class="writing-body">
+      {{ .Content }}
+    </div>
+
+    <div class="writing-meta">
+      <div class="meta-row">
+        {{ with .Params.date_display }}<span><span class="meta-label">Date</span> {{ . }}</span>{{ end }}
+        {{ with .Params.category }}<span><span class="meta-label">Category</span> {{ . }}</span>{{ end }}
+      </div>
+      <div class="meta-row">
+        <span><span class="meta-label">Author</span> Oyparaploo</span>
+        <span><span class="meta-label">Methodology</span> Wonderful Garbage</span>
+        <span><span class="meta-label">Style</span> Noir Song</span>
+      </div>
+    </div>
+  </article>
+
+  <footer class="site-footer">
+    OyPARáPLoO! — Beautiful Garbage since 1995
+  </footer>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js");
+    }
+  </script>
+</body>
+</html>
