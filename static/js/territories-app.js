@@ -305,70 +305,9 @@ function Territories() {
               OyPARáPLoO! — Inside Out Field Guide — conscious eyes practice
             </p>
           </div>
-          <button onClick={() => { resetForm(); setShowAddForm(!showAddForm); }} style={{ fontFamily: fonts.ui, fontSize: mobile ? 14 : 15, fontWeight: 500, background: showAddForm ? PALETTE.text : "transparent", color: showAddForm ? PALETTE.bg : PALETTE.text, border: `1.5px solid ${PALETTE.text}`, padding: mobile ? "8px 18px" : "10px 24px", cursor: "pointer", letterSpacing: "0.03em" }}>
-            {showAddForm ? "close" : "+ collect"}
-          </button>
         </div>
         <div style={{ width: 60, height: 2, background: PALETTE.accent, marginTop: mobile ? 16 : 22 }} />
       </header>
-
-      {/* ===== ADD/EDIT FORM ===== */}
-      {showAddForm && (
-        <div ref={formRef} style={{ maxWidth: 1200, margin: "0 auto", padding: `20px ${pad}` }}>
-          <div style={{ background: PALETTE.card, border: `1px solid ${PALETTE.border}`, padding: mobile ? "20px 16px" : "28px 32px" }}>
-            <h3 style={{ fontFamily: fonts.display, fontSize: mobile ? 19 : 21, fontWeight: 500, margin: "0 0 16px", color: PALETTE.text }}>
-              {editingItem ? "edit this ground" : "new ground"}
-            </h3>
-            <div style={{ display: "flex", gap: 6, marginBottom: 16, flexWrap: "wrap" }}>
-              {["link", "image", "note", "palette", "clipping"].map(t => (
-                <button key={t} onClick={() => setForm({ ...form, type: t })} style={{ fontFamily: fonts.ui, fontSize: mobile ? 13 : 14, fontWeight: form.type === t ? 500 : 400, background: form.type === t ? PALETTE.text : "transparent", color: form.type === t ? PALETTE.bg : PALETTE.textLight, border: `1px solid ${form.type === t ? PALETTE.text : PALETTE.border}`, padding: mobile ? "5px 12px" : "6px 16px", cursor: "pointer" }}>
-                  {typeIcon(t)} {t}
-                </button>
-              ))}
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              <input placeholder="title — what is this?" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} style={inputStyle()} />
-              {(form.type === "link" || form.type === "clipping") && <input placeholder="url" value={form.url} onChange={e => setForm({ ...form, url: e.target.value })} style={inputStyle(fonts.meta, mobile ? 14 : 15)} />}
-              {(form.type === "image" || form.type === "link") && <input placeholder="image url (optional)" value={form.imageUrl} onChange={e => setForm({ ...form, imageUrl: e.target.value })} style={inputStyle(fonts.meta, mobile ? 14 : 15)} />}
-              <textarea placeholder="notes — why does this matter to us?" value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} rows={3} style={{ ...inputStyle(), resize: "vertical", lineHeight: 1.6 }} />
-
-              {form.type === "palette" && (
-                <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-                  {form.palette.map((c, i) => <div key={i} onClick={() => setForm({ ...form, palette: form.palette.filter((_, j) => j !== i) })} style={{ width: 32, height: 32, background: c, border: `1px solid ${PALETTE.border}`, cursor: "pointer" }} />)}
-                  <input placeholder="#hex" value={form.paletteInput} onChange={e => setForm({ ...form, paletteInput: e.target.value })} onKeyDown={e => e.key === "Enter" && addPaletteColor()} style={{ ...inputStyle(fonts.meta, 14), width: 80, flex: "none" }} />
-                  <button onClick={addPaletteColor} style={{ fontFamily: fonts.ui, fontSize: 13, background: "transparent", border: `1px solid ${PALETTE.border}`, padding: "6px 12px", cursor: "pointer", color: PALETTE.textLight }}>add</button>
-                </div>
-              )}
-
-              <div>
-                <span style={{ fontFamily: fonts.meta, fontSize: 13, color: PALETTE.textMuted, letterSpacing: "0.04em", textTransform: "uppercase", display: "block", marginBottom: 8 }}>sources:</span>
-                {form.sources.map((s, i) => (
-                  <div key={i} style={{ display: "flex", gap: 6, marginBottom: 6, flexWrap: mobile ? "wrap" : "nowrap" }}>
-                    <input placeholder="label" value={s.label} onChange={e => { const u = [...form.sources]; u[i] = { ...u[i], label: e.target.value }; setForm({ ...form, sources: u }); }} style={{ ...inputStyle(fonts.meta, 14), flex: 1, minWidth: mobile ? "100%" : 0 }} />
-                    <input placeholder="url" value={s.url} onChange={e => { const u = [...form.sources]; u[i] = { ...u[i], url: e.target.value }; setForm({ ...form, sources: u }); }} style={{ ...inputStyle(fonts.meta, 14), flex: 2, minWidth: mobile ? "100%" : 0 }} />
-                    {form.sources.length > 1 && <button onClick={() => setForm({ ...form, sources: form.sources.filter((_, j) => j !== i) })} style={{ fontFamily: fonts.ui, fontSize: 13, background: "transparent", border: `1px solid ${PALETTE.border}`, padding: "4px 8px", cursor: "pointer", color: PALETTE.textMuted }}>×</button>}
-                  </div>
-                ))}
-                <button onClick={() => setForm({ ...form, sources: [...form.sources, { label: "", url: "" }] })} style={{ fontFamily: fonts.ui, fontSize: 13, background: "transparent", border: `1px solid ${PALETTE.border}`, padding: "4px 12px", cursor: "pointer", color: PALETTE.textMuted, marginTop: 2 }}>+ add source</button>
-              </div>
-
-              <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-                <span style={{ fontFamily: fonts.meta, fontSize: 13, color: PALETTE.textMuted, letterSpacing: "0.04em", textTransform: "uppercase" }}>territory:</span>
-                <select value={form.territory} onChange={e => setForm({ ...form, territory: e.target.value })} style={{ fontFamily: fonts.ui, fontSize: mobile ? 14 : 15, padding: "6px 12px", border: `1px solid ${PALETTE.borderLight}`, background: PALETTE.bg, color: PALETTE.text, outline: "none", cursor: "pointer", maxWidth: mobile ? "100%" : "auto" }}>
-                  {[...territories].sort((a, b) => a.localeCompare(b)).map(t => <option key={t} value={t}>{t}</option>)}
-                </select>
-              </div>
-
-              <div style={{ display: "flex", gap: 10, marginTop: 4 }}>
-                <button onClick={handleSubmit} style={{ fontFamily: fonts.ui, fontSize: mobile ? 14 : 15, fontWeight: 500, background: PALETTE.text, color: PALETTE.bg, border: "none", padding: mobile ? "10px 22px" : "10px 28px", cursor: "pointer", letterSpacing: "0.03em" }}>
-                  {editingItem ? "save changes" : "plant it"}
-                </button>
-                {editingItem && <button onClick={() => { resetForm(); setShowAddForm(false); }} style={{ fontFamily: fonts.ui, fontSize: mobile ? 14 : 15, background: "transparent", color: PALETTE.textLight, border: `1px solid ${PALETTE.border}`, padding: "10px 20px", cursor: "pointer" }}>cancel</button>}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* ===== TERRITORY NAV ===== */}
       <nav style={{ maxWidth: 1200, margin: "0 auto", padding: `${mobile ? 16 : 24}px ${pad} 0` }}>
@@ -384,15 +323,6 @@ function Territories() {
               {t}
             </button>
           ))}
-          {showAddTerritory ? (
-            <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-              <input autoFocus placeholder="new territory" value={newTerritoryName} onChange={e => setNewTerritoryName(e.target.value)} onKeyDown={e => e.key === "Enter" && addTerritory()} style={{ fontFamily: fonts.ui, fontSize: 14, padding: "6px 12px", border: `1px solid ${PALETTE.border}`, background: PALETTE.bg, outline: "none", width: 140 }} />
-              <button onClick={addTerritory} style={{ fontFamily: fonts.ui, fontSize: 13, background: PALETTE.accent, color: "#fff", border: "none", padding: "7px 12px", cursor: "pointer" }}>claim</button>
-              <button onClick={() => { setShowAddTerritory(false); setNewTerritoryName(""); }} style={{ fontFamily: fonts.ui, fontSize: 19, background: "transparent", color: PALETTE.textMuted, border: "none", cursor: "pointer", padding: "2px 6px" }}>×</button>
-            </div>
-          ) : (
-            <button onClick={() => setShowAddTerritory(true)} style={{ fontFamily: fonts.ui, fontSize: 14, background: "transparent", color: mobile ? PALETTE.textLight : PALETTE.textMuted, border: `1px dashed ${PALETTE.borderLight}`, padding: mobile ? "6px 11px" : "6px 14px", cursor: "pointer" }}>+ territory</button>
-          )}
         </div>
       </nav>
 
@@ -457,8 +387,7 @@ function Territories() {
                   columnGap: 20,
                 }}>
                   {filteredItems.map(item => (
-                    <div key={item.id} style={{ breakInside: "avoid", marginBottom: mobile ? 16 : 20, background: PALETTE.card, border: `1px solid ${PALETTE.borderLight}`, overflow: "hidden", cursor: "pointer" }}
-                      onClick={() => setExpandedItem(expandedItem === item.id ? null : item.id)}>
+                    <div key={item.id} style={{ breakInside: "avoid", marginBottom: mobile ? 16 : 20, background: PALETTE.card, border: `1px solid ${PALETTE.borderLight}`, overflow: "hidden" }}>
 
                       {item.imageUrl && (
                         <div style={{ width: "100%", overflow: "hidden", background: PALETTE.bgWarm }}>
@@ -504,13 +433,6 @@ function Territories() {
                             {formatDate(item.created)}
                           </span>
                         </div>
-
-                        {expandedItem === item.id && (
-                          <div style={{ display: "flex", gap: 12, marginTop: 14, paddingTop: 12, borderTop: `1px solid ${PALETTE.borderLight}` }}>
-                            <button onClick={e => { e.stopPropagation(); startEdit(item); setShowModal(false); }} style={{ fontFamily: fonts.ui, fontSize: 13, background: "transparent", color: PALETTE.textLight, border: `1px solid ${PALETTE.border}`, padding: "5px 14px", cursor: "pointer" }}>edit</button>
-                            <button onClick={e => { e.stopPropagation(); if (confirm("Remove this from the collection?")) deleteItem(item.id); }} style={{ fontFamily: fonts.ui, fontSize: 13, background: "transparent", color: PALETTE.textMuted, border: `1px solid ${PALETTE.borderLight}`, padding: "5px 14px", cursor: "pointer" }}>remove</button>
-                          </div>
-                        )}
                       </div>
                     </div>
                   ))}
