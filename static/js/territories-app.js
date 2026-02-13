@@ -296,12 +296,12 @@ function Territories() {
         <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", gap: mobile ? 12 : 16, marginBottom: 10 }}>
           <div>
             <p style={{ fontFamily: fonts.meta, fontSize: mobile ? 14 : 16, color: mobile ? PALETTE.textLight : PALETTE.textMuted, letterSpacing: "0.04em", margin: "0 0 10px" }}>
-              ( now for something completely familiar or different! )
+              ( now for something familiar or completely different! )
             </p>
             <h1 style={{ fontFamily: fonts.display, fontSize: mobile ? 30 : 39, fontWeight: 600, color: PALETTE.text, margin: 0, letterSpacing: "0.01em", lineHeight: 1.1 }}>
               Territories
             </h1>
-            <p style={{ fontFamily: fonts.meta, fontSize: mobile ? 14 : 16, color: mobile ? PALETTE.textLight : PALETTE.textMuted, margin: "8px 0 0", letterSpacing: "0.04em" }}>
+            <p style={{ fontFamily: fonts.meta, fontSize: mobile ? 15 : 17, color: mobile ? PALETTE.textLight : PALETTE.textMuted, margin: "8px 0 0", letterSpacing: "0.04em" }}>
               OyPARáPLoO! — Inside Out Field Guide — conscious eyes practice
             </p>
           </div>
@@ -453,7 +453,7 @@ function Territories() {
                 </div>
               ) : (
                 <div style={{
-                  columns: mobile ? "1" : "2 320px",
+                  columns: mobile || filteredItems.length <= 2 ? "1" : "2 320px",
                   columnGap: 20,
                 }}>
                   {filteredItems.map(item => (
@@ -521,15 +521,6 @@ function Territories() {
         </div>
       )}
 
-      {/* ===== FOOTER ===== */}
-      <footer style={{ maxWidth: 1200, margin: "0 auto", padding: `0 ${pad} ${mobile ? 28 : 40}px`, borderTop: `1px solid ${PALETTE.borderLight}`, marginTop: mobile ? 24 : 40, paddingTop: 20 }}>
-        <p style={{ fontFamily: fonts.meta, fontSize: mobile ? 14 : 16, color: mobile ? PALETTE.textLight : PALETTE.textMuted, letterSpacing: "0.04em", margin: 0 }}>
-          ( now for something completely familiar or different! )
-        </p>
-        <p style={{ fontFamily: fonts.meta, fontSize: mobile ? 14 : 15, color: mobile ? PALETTE.textLight : PALETTE.textMuted, letterSpacing: "0.03em", marginTop: 4 }}>
-          {items.length} item{items.length !== 1 ? "s" : ""} across {new Set(items.map(i => i.territory)).size} territor{new Set(items.map(i => i.territory)).size !== 1 ? "ies" : "y"}
-        </p>
-      </footer>
     </div>
   );
 }
