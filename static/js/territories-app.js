@@ -106,6 +106,19 @@ function Territories() {
   const [showAddTerritory, setShowAddTerritory] = useState(false);
   const [newTerritoryName, setNewTerritoryName] = useState("");
   const [expandedItem, setExpandedItem] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (showModal) {
+      document.body.style.overflow = "hidden";
+      const handleEsc = (e) => { if (e.key === "Escape") setShowModal(false); };
+      window.addEventListener("keydown", handleEsc);
+      return () => { document.body.style.overflow = ""; window.removeEventListener("keydown", handleEsc); };
+    } else {
+      document.body.style.overflow = "";
+    }
+  }, [showModal]);
   const formRef = useRef(null);
   const width = useWindowWidth();
   const mobile = width < 768;
@@ -325,11 +338,11 @@ function Territories() {
           display: "flex", gap: mobile ? 5 : 6, flexWrap: "wrap", alignItems: "center",
           width: "100%",
         }}>
-          <button onClick={() => setActiveTerritory("All")} style={{ fontFamily: fonts.ui, fontSize: mobile ? 14 : 15, fontWeight: activeTerritory === "All" ? 600 : 400, background: activeTerritory === "All" ? PALETTE.text : "transparent", color: activeTerritory === "All" ? "#f3f0ed" : PALETTE.textLight, border: `1px solid ${activeTerritory === "All" ? PALETTE.text : PALETTE.borderLight}`, padding: mobile ? "6px 11px" : "7px 16px", cursor: "pointer", letterSpacing: "0.02em", outline: "none" }}>
+          <button onClick={() => { setActiveTerritory("All"); setShowModal(true); setExpandedItem(null); }} style={{ fontFamily: fonts.ui, fontSize: mobile ? 14 : 15, fontWeight: activeTerritory === "All" && showModal ? 600 : 400, background: activeTerritory === "All" && showModal ? PALETTE.text : "transparent", color: activeTerritory === "All" && showModal ? "#f3f0ed" : PALETTE.textLight, border: `1px solid ${activeTerritory === "All" && showModal ? PALETTE.text : PALETTE.borderLight}`, padding: mobile ? "6px 11px" : "7px 16px", cursor: "pointer", letterSpacing: "0.02em", outline: "none" }}>
             All ({items.length})
           </button>
           {[...territories].sort((a, b) => a.localeCompare(b)).map(t => (
-            <button key={t} onClick={() => setActiveTerritory(t)} style={{ fontFamily: fonts.ui, fontSize: mobile ? 14 : 15, fontWeight: activeTerritory === t ? 600 : 400, background: activeTerritory === t ? PALETTE.text : "transparent", color: activeTerritory === t ? PALETTE.bg : PALETTE.textLight, border: `1px solid ${activeTerritory === t ? PALETTE.text : PALETTE.borderLight}`, padding: mobile ? "6px 11px" : "7px 16px", cursor: "pointer", letterSpacing: "0.02em", outline: "none", opacity: territoryCounts[t] ? 1 : 0.5 }}>
+            <button key={t} onClick={() => { setActiveTerritory(t); setShowModal(true); setExpandedItem(null); }} style={{ fontFamily: fonts.ui, fontSize: mobile ? 14 : 15, fontWeight: activeTerritory === t && showModal ? 600 : 400, background: activeTerritory === t && showModal ? PALETTE.text : "transparent", color: activeTerritory === t && showModal ? PALETTE.bg : PALETTE.textLight, border: `1px solid ${activeTerritory === t && showModal ? PALETTE.text : PALETTE.borderLight}`, padding: mobile ? "6px 11px" : "7px 16px", cursor: "pointer", letterSpacing: "0.02em", outline: "none", opacity: territoryCounts[t] ? 1 : 0.5 }}>
               {t} {territoryCounts[t] ? `(${territoryCounts[t]})` : ""}
             </button>
           ))}
@@ -345,81 +358,129 @@ function Territories() {
         </div>
       </nav>
 
-      {/* ===== ITEMS ===== */}
-      <main style={{ maxWidth: 1200, margin: "0 auto", padding: `${mobile ? 16 : 24}px ${pad} ${mobile ? 40 : 60}px` }}>
-        {filteredItems.length === 0 ? (
-          <div style={{ textAlign: "center", padding: mobile ? "50px 16px" : "80px 20px", color: PALETTE.textMuted }}>
-            <p style={{ fontFamily: fonts.display, fontSize: mobile ? 20 : 23, fontWeight: 400, fontStyle: "italic", marginBottom: 8 }}>
-              {activeTerritory === "All" ? "no ground claimed yet" : `${activeTerritory} — empty ground`}
-            </p>
-            <p style={{ fontFamily: fonts.ui, fontSize: mobile ? 14 : 15, fontWeight: 300 }}>collect something that makes the antenna twitch</p>
-          </div>
-        ) : (
-          <div style={{
-            columns: mobile ? "1" : "3 280px",
-            columnGap: 20,
+      {/* ===== MODAL OVERLAY ===== */}
+      {showModal && (
+        <div onClick={() => setShowModal(false)} style={{
+          position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+          background: "rgba(26, 22, 19, 0.6)",
+          zIndex: 9999,
+          display: "flex", justifyContent: "center", alignItems: mobile ? "flex-end" : "center",
+          padding: mobile ? 0 : "24px",
+        }}>
+          <div onClick={e => e.stopPropagation()} style={{
+            background: PALETTE.bg,
+            width: "100%",
+            maxWidth: 1000,
+            maxHeight: mobile ? "92vh" : "88vh",
+            overflow: "hidden",
+            display: "flex", flexDirection: "column",
+            borderRadius: mobile ? "16px 16px 0 0" : "4px",
+            boxShadow: "0 12px 60px rgba(0,0,0,0.35)",
           }}>
-            {filteredItems.map(item => (
-              <div key={item.id} style={{ breakInside: "avoid", marginBottom: mobile ? 16 : 20, background: PALETTE.card, border: `1px solid ${PALETTE.borderLight}`, overflow: "hidden", cursor: "pointer" }}
-                onClick={() => setExpandedItem(expandedItem === item.id ? null : item.id)}>
-
-                {item.imageUrl && (
-                  <div style={{ width: "100%", overflow: "hidden", background: PALETTE.bgWarm }}>
-                    <img src={item.imageUrl} alt={item.title} style={{ width: "100%", display: "block", objectFit: "cover" }} onError={e => e.target.style.display = "none"} />
-                  </div>
-                )}
-
-                {item.palette?.length > 0 && (
-                  <div style={{ display: "flex", height: 48 }}>
-                    {item.palette.map((c, i) => <div key={i} style={{ flex: 1, background: c }} />)}
-                  </div>
-                )}
-
-                <div style={{ padding: mobile ? "14px 14px" : "16px 18px" }}>
-                  <h3 style={{ fontFamily: fonts.display, fontSize: mobile ? 18 : 18, fontWeight: 500, margin: 0, lineHeight: 1.3, color: PALETTE.text }}>
-                    <span style={{ color: mobile ? PALETTE.textLight : PALETTE.textMuted, marginRight: 6, fontSize: 15 }}>{typeIcon(item.type)}</span>
-                    {item.url ? (
-                      <a href={item.url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ color: PALETTE.text, textDecoration: "none", borderBottom: `1px solid ${PALETTE.borderLight}` }}>{item.title}</a>
-                    ) : item.title}
-                  </h3>
-
-                  {item.notes && (
-                    <p style={{ fontFamily: fonts.body, fontSize: mobile ? 16 : 16, lineHeight: 1.65, color: mobile ? PALETTE.text : PALETTE.textLight, margin: "10px 0 0", whiteSpace: "pre-wrap" }}>
-                      {item.notes}
-                    </p>
-                  )}
-
-                  {item.sources?.length > 0 && (
-                    <div style={{ marginTop: 10, display: "flex", flexWrap: "wrap", gap: "4px 14px" }}>
-                      {item.sources.map((s, i) => (
-                        <a key={i} href={s.url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ fontFamily: fonts.meta, fontSize: mobile ? 15 : 15, color: PALETTE.accentSoft, textDecoration: "none", lineHeight: 1.8 }}>
-                          {s.label}
-                        </a>
-                      ))}
-                    </div>
-                  )}
-
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 12, flexWrap: "wrap", gap: 6 }}>
-                    <span style={{ fontFamily: fonts.meta, fontSize: mobile ? 14 : 14, color: mobile ? PALETTE.textLight : PALETTE.textMuted, letterSpacing: "0.04em", border: `1px solid ${PALETTE.borderLight}`, padding: "4px 12px" }}>
-                      {item.territory}
-                    </span>
-                    <span style={{ fontFamily: fonts.meta, fontSize: mobile ? 14 : 14, color: mobile ? PALETTE.textLight : PALETTE.textMuted, letterSpacing: "0.02em" }}>
-                      {formatDate(item.created)}
-                    </span>
-                  </div>
-
-                  {expandedItem === item.id && (
-                    <div style={{ display: "flex", gap: 12, marginTop: 14, paddingTop: 12, borderTop: `1px solid ${PALETTE.borderLight}` }}>
-                      <button onClick={e => { e.stopPropagation(); startEdit(item); }} style={{ fontFamily: fonts.ui, fontSize: 13, background: "transparent", color: PALETTE.textLight, border: `1px solid ${PALETTE.border}`, padding: "5px 14px", cursor: "pointer" }}>edit</button>
-                      <button onClick={e => { e.stopPropagation(); if (confirm("Remove this from the collection?")) deleteItem(item.id); }} style={{ fontFamily: fonts.ui, fontSize: 13, background: "transparent", color: PALETTE.textMuted, border: `1px solid ${PALETTE.borderLight}`, padding: "5px 14px", cursor: "pointer" }}>remove</button>
-                    </div>
-                  )}
-                </div>
+            {/* Modal header */}
+            <div style={{
+              display: "flex", justifyContent: "space-between", alignItems: "center",
+              padding: mobile ? "16px 16px 12px" : "20px 28px 16px",
+              borderBottom: `1px solid ${PALETTE.borderLight}`,
+              flexShrink: 0,
+            }}>
+              <div>
+                <h2 style={{ fontFamily: fonts.display, fontSize: mobile ? 22 : 26, fontWeight: 600, margin: 0, color: PALETTE.text, lineHeight: 1.2 }}>
+                  {activeTerritory}
+                </h2>
+                <p style={{ fontFamily: fonts.meta, fontSize: 14, color: PALETTE.textMuted, margin: "4px 0 0", letterSpacing: "0.02em" }}>
+                  {filteredItems.length} item{filteredItems.length !== 1 ? "s" : ""}
+                </p>
               </div>
-            ))}
+              <button onClick={() => setShowModal(false)} style={{
+                fontFamily: fonts.ui, fontSize: 28, background: "transparent",
+                color: PALETTE.textMuted, border: "none", cursor: "pointer",
+                padding: "4px 10px", lineHeight: 1,
+              }}>×</button>
+            </div>
+
+            {/* Modal body — scrollable */}
+            <div style={{
+              overflowY: "auto",
+              padding: mobile ? "16px" : "24px 28px",
+              flexGrow: 1,
+            }}>
+              {filteredItems.length === 0 ? (
+                <div style={{ textAlign: "center", padding: mobile ? "40px 16px" : "60px 20px", color: PALETTE.textMuted }}>
+                  <p style={{ fontFamily: fonts.display, fontSize: mobile ? 20 : 23, fontWeight: 400, fontStyle: "italic", marginBottom: 8 }}>
+                    {activeTerritory === "All" ? "no ground claimed yet" : `empty ground`}
+                  </p>
+                  <p style={{ fontFamily: fonts.ui, fontSize: mobile ? 14 : 15, fontWeight: 300 }}>collect something that makes the antenna twitch</p>
+                </div>
+              ) : (
+                <div style={{
+                  columns: mobile ? "1" : "2 320px",
+                  columnGap: 20,
+                }}>
+                  {filteredItems.map(item => (
+                    <div key={item.id} style={{ breakInside: "avoid", marginBottom: mobile ? 16 : 20, background: PALETTE.card, border: `1px solid ${PALETTE.borderLight}`, overflow: "hidden", cursor: "pointer" }}
+                      onClick={() => setExpandedItem(expandedItem === item.id ? null : item.id)}>
+
+                      {item.imageUrl && (
+                        <div style={{ width: "100%", overflow: "hidden", background: PALETTE.bgWarm }}>
+                          <img src={item.imageUrl} alt={item.title} style={{ width: "100%", display: "block", objectFit: "cover" }} onError={e => e.target.style.display = "none"} />
+                        </div>
+                      )}
+
+                      {item.palette?.length > 0 && (
+                        <div style={{ display: "flex", height: 48 }}>
+                          {item.palette.map((c, i) => <div key={i} style={{ flex: 1, background: c }} />)}
+                        </div>
+                      )}
+
+                      <div style={{ padding: mobile ? "14px 14px" : "16px 18px" }}>
+                        <h3 style={{ fontFamily: fonts.display, fontSize: mobile ? 18 : 18, fontWeight: 500, margin: 0, lineHeight: 1.3, color: PALETTE.text }}>
+                          <span style={{ color: mobile ? PALETTE.textLight : PALETTE.textMuted, marginRight: 6, fontSize: 15 }}>{typeIcon(item.type)}</span>
+                          {item.url ? (
+                            <a href={item.url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ color: PALETTE.text, textDecoration: "none", borderBottom: `1px solid ${PALETTE.borderLight}` }}>{item.title}</a>
+                          ) : item.title}
+                        </h3>
+
+                        {item.notes && (
+                          <p style={{ fontFamily: fonts.body, fontSize: mobile ? 16 : 16, lineHeight: 1.65, color: mobile ? PALETTE.text : PALETTE.textLight, margin: "10px 0 0", whiteSpace: "pre-wrap" }}>
+                            {item.notes}
+                          </p>
+                        )}
+
+                        {item.sources?.length > 0 && (
+                          <div style={{ marginTop: 10, display: "flex", flexWrap: "wrap", gap: "4px 14px" }}>
+                            {item.sources.map((s, i) => (
+                              <a key={i} href={s.url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ fontFamily: fonts.meta, fontSize: mobile ? 15 : 15, color: PALETTE.accentSoft, textDecoration: "none", lineHeight: 1.8 }}>
+                                {s.label}
+                              </a>
+                            ))}
+                          </div>
+                        )}
+
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 12, flexWrap: "wrap", gap: 6 }}>
+                          <span style={{ fontFamily: fonts.meta, fontSize: mobile ? 14 : 14, color: mobile ? PALETTE.textLight : PALETTE.textMuted, letterSpacing: "0.04em", border: `1px solid ${PALETTE.borderLight}`, padding: "4px 12px" }}>
+                            {item.territory}
+                          </span>
+                          <span style={{ fontFamily: fonts.meta, fontSize: mobile ? 14 : 14, color: mobile ? PALETTE.textLight : PALETTE.textMuted, letterSpacing: "0.02em" }}>
+                            {formatDate(item.created)}
+                          </span>
+                        </div>
+
+                        {expandedItem === item.id && (
+                          <div style={{ display: "flex", gap: 12, marginTop: 14, paddingTop: 12, borderTop: `1px solid ${PALETTE.borderLight}` }}>
+                            <button onClick={e => { e.stopPropagation(); startEdit(item); setShowModal(false); }} style={{ fontFamily: fonts.ui, fontSize: 13, background: "transparent", color: PALETTE.textLight, border: `1px solid ${PALETTE.border}`, padding: "5px 14px", cursor: "pointer" }}>edit</button>
+                            <button onClick={e => { e.stopPropagation(); if (confirm("Remove this from the collection?")) deleteItem(item.id); }} style={{ fontFamily: fonts.ui, fontSize: 13, background: "transparent", color: PALETTE.textMuted, border: `1px solid ${PALETTE.borderLight}`, padding: "5px 14px", cursor: "pointer" }}>remove</button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-        )}
-      </main>
+        </div>
+      )}
 
       {/* ===== FOOTER ===== */}
       <footer style={{ maxWidth: 1200, margin: "0 auto", padding: `0 ${pad} ${mobile ? 28 : 40}px`, borderTop: `1px solid ${PALETTE.borderLight}`, paddingTop: 20 }}>
