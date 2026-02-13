@@ -111,7 +111,7 @@ const PALETTE = {
   accent: "#8b4513",
   accentSoft: "#8b4723",
   border: "#b8aea3",
-  borderLight: "#cdc4b9",
+  borderLight: "#bbb1a5",
   card: "#fffdf9",
   tag: "#ddd5c9",
   tagHover: "#d0c6b8",
@@ -298,7 +298,7 @@ function Territories() {
             <p style={{ fontFamily: fonts.meta, fontSize: mobile ? 14 : 16, color: mobile ? PALETTE.textLight : PALETTE.textMuted, letterSpacing: "0.04em", margin: "0 0 10px" }}>
               ( now for something familiar or completely different! )
             </p>
-            <h1 style={{ fontFamily: fonts.display, fontSize: mobile ? 30 : 39, fontWeight: 600, color: PALETTE.text, margin: 0, letterSpacing: "0.01em", lineHeight: 1.1 }}>
+            <h1 style={{ fontFamily: fonts.display, fontSize: mobile ? 32 : 41, fontWeight: 600, color: PALETTE.text, margin: 0, letterSpacing: "0.01em", lineHeight: 1.1 }}>
               Territories
             </h1>
             <p style={{ fontFamily: fonts.meta, fontSize: mobile ? 15 : 17, color: mobile ? PALETTE.textLight : PALETTE.textMuted, margin: "8px 0 0", letterSpacing: "0.04em" }}>
