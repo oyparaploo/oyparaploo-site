@@ -407,7 +407,8 @@ function Territories() {
         }}>
           <div onClick={e => e.stopPropagation()} style={{
             background: PALETTE.bg,
-            width: "100%",
+            width: mobile ? "100%" : "auto",
+            minWidth: mobile ? "100%" : 420,
             maxWidth: 1000,
             maxHeight: mobile ? "92vh" : "88vh",
             overflow: "hidden",
@@ -521,7 +522,7 @@ function Territories() {
       )}
 
       {/* ===== FOOTER ===== */}
-      <footer style={{ maxWidth: 1200, margin: "0 auto", padding: `0 ${pad} ${mobile ? 28 : 40}px`, borderTop: `1px solid ${PALETTE.borderLight}`, paddingTop: 20 }}>
+      <footer style={{ maxWidth: 1200, margin: "0 auto", padding: `0 ${pad} ${mobile ? 28 : 40}px`, borderTop: `1px solid ${PALETTE.borderLight}`, marginTop: mobile ? 24 : 40, paddingTop: 20 }}>
         <p style={{ fontFamily: fonts.meta, fontSize: mobile ? 14 : 16, color: mobile ? PALETTE.textLight : PALETTE.textMuted, letterSpacing: "0.04em", margin: 0 }}>
           ( now for something completely familiar or different! )
         </p>
