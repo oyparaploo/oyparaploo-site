@@ -379,9 +379,9 @@ function Territories() {
           <button onClick={() => { setActiveTerritory("All"); setShowModal(true); setExpandedItem(null); }} style={{ fontFamily: fonts.ui, fontSize: mobile ? 14 : 15, fontWeight: activeTerritory === "All" && showModal ? 600 : 400, background: activeTerritory === "All" && showModal ? PALETTE.text : "transparent", color: activeTerritory === "All" && showModal ? "#f3f0ed" : PALETTE.textLight, border: `1px solid ${activeTerritory === "All" && showModal ? PALETTE.text : PALETTE.borderLight}`, padding: mobile ? "6px 11px" : "7px 16px", cursor: "pointer", letterSpacing: "0.02em", outline: "none" }}>
             All ({items.length})
           </button>
-          {[...territories].sort((a, b) => a.localeCompare(b)).map(t => (
-            <button key={t} onClick={() => { setActiveTerritory(t); setShowModal(true); setExpandedItem(null); }} style={{ fontFamily: fonts.ui, fontSize: mobile ? 14 : 15, fontWeight: activeTerritory === t && showModal ? 600 : 400, background: activeTerritory === t && showModal ? PALETTE.text : "transparent", color: activeTerritory === t && showModal ? PALETTE.bg : PALETTE.textLight, border: `1px solid ${activeTerritory === t && showModal ? PALETTE.text : PALETTE.borderLight}`, padding: mobile ? "6px 11px" : "7px 16px", cursor: "pointer", letterSpacing: "0.02em", outline: "none", opacity: territoryCounts[t] ? 1 : 0.5 }}>
-              {t} {territoryCounts[t] ? `(${territoryCounts[t]})` : ""}
+          {[...territories].sort((a, b) => a.localeCompare(b)).filter(t => territoryCounts[t]).map(t => (
+            <button key={t} onClick={() => { setActiveTerritory(t); setShowModal(true); setExpandedItem(null); }} style={{ fontFamily: fonts.ui, fontSize: mobile ? 14 : 15, fontWeight: activeTerritory === t && showModal ? 600 : 400, background: activeTerritory === t && showModal ? PALETTE.text : "transparent", color: activeTerritory === t && showModal ? PALETTE.bg : PALETTE.textLight, border: `1px solid ${activeTerritory === t && showModal ? PALETTE.text : PALETTE.borderLight}`, padding: mobile ? "6px 11px" : "7px 16px", cursor: "pointer", letterSpacing: "0.02em", outline: "none" }}>
+              {t}
             </button>
           ))}
           {showAddTerritory ? (
