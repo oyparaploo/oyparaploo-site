@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>-webkit-text-size-adjust:100%;text-size-adjust:100%;</style>
+<title>Portraits — Oyparaploo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=DM+Sans:wght@300..700&family=Inter:wght@300;400;500;600&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   OYPARAPLOO — PORTRAITS PAGE
+   Spec-locked against The Spec (Feb 25, 2026 revision).
+   Dark-ground system.
+   Warm white base: rgba(232,224,214,...)
+   Floor: 0.62. No text below 17px. No italic Lora.
+   Interactive borders: 0.30 base / 0.45 hover.
+   ============================================================ */
+
+:root {
+  /* Ground — spec gradient */
+  --ground-gradient: linear-gradient(to bottom,
+    #000000 0%,#000000 5%,#020203 12%,#040507 20%,
+    #060810 30%,#080a13 40%,#0a0d16 50%,#0b0f18 60%,
+    #0d111b 70%,#0e121d 80%,#10141f 90%,#111521 100%);
+  --ground:      #0a0d16;
+  --ground-card: #0d111b;
+  --ground-lift: #111521;
+
+  /* Warm white opacity tiers — rgba(232,224,214,...) */
+  --t-primary: rgba(232,224,214,0.88);
+  --t-section: rgba(232,224,214,0.80);
+  --t-card:    rgba(232,224,214,0.78);
+  --t-archive: rgba(232,224,214,0.72);
+  --t-nav:     rgba(232,224,214,0.68);
+  --t-desc:    rgba(232,224,214,0.65);
+  --t-sub:     rgba(232,224,214,0.62);
+
+  /* Blue accent */
+  --blue:       rgba(168,200,224,0.75);
+  --blue-hover: rgba(168,200,224,0.95);
+  --blue-under: rgba(168,200,224,0.60);
+
+  /* Interactive borders: 0.30 / 0.45 */
+  --border:       rgba(232,224,214,0.30);
+  --border-hover: rgba(232,224,214,0.45);
+
+  /* Card image placeholder tints */
+  --tint-a: rgba(168,200,224,0.04);
+  --tint-b: rgba(232,224,214,0.03);
+
+  /* Accent gradient rule */
+  --accent-rule: linear-gradient(90deg,#4a7bcc,#3aaa6e);
+
+  /* Fonts */
+  --font-display: 'Lora', Georgia, serif;
+  --font-ui:      'Inter', sans-serif;
+  --font-body:    'Work Sans', sans-serif;
+
+  --site-pad: 40px;
+  --max-w:    1400px;
+  --ease:     cubic-bezier(.4,0,.2,1);
+}
+
+/* ============================================================ RESET */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+
+body {
+  background: var(--ground);
+  background-image: var(--ground-gradient);
+  background-attachment: fixed;
+  color: var(--t-primary);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overflow-x: hidden;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  min-height: 100vh;
+}
+
+a, button, [role="button"] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ============================================================ ACCENT RULE */
+.accent-rule {
+  display: block;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(74,123,204,0.45) 8%,
+    rgba(74,123,204,0.60) 15%,
+    rgba(74,123,204,0.18) 24%,
+    rgba(58,170,110,0.52) 34%,
+    rgba(58,170,110,0.70) 44%,
+    rgba(58,170,110,0.15) 54%,
+    rgba(58,170,110,0.60) 63%,
+    rgba(58,170,110,0.48) 74%,
+    rgba(58,170,110,0.12) 83%,
+    rgba(58,170,110,0.38) 90%,
+    transparent 100%);
+  border: none;
+}
+
+/* ============================================================ NAV
+   Logotype: Inter 22px / 500 / 0.68
+   Nav links: Inter 21px / 500 / 0.68 / gap 32px */
+nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(10,13,22,0.97);
+}
+.nav-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 var(--site-pad);
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.wordmark {
+  font-family: var(--font-ui);
+  font-weight: 500;
+  font-size: 20px;
+  color: var(--t-nav);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+  transition: color 0.2s var(--ease);
+}
+.wordmark:hover { color: rgba(232,224,214,0.85); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  list-style: none;
+  padding-left: 0;
+}
+.nav-links a {
+  font-family: var(--font-ui);
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--t-nav);
+  text-decoration: none;
+  transition: color 0.2s var(--ease);
+}
+.nav-links a:hover { color: rgba(232,224,214,0.85); }
+.nav-links a.active {
+  color: var(--t-nav);
+  text-decoration: underline;
+  text-underline-offset: 9px;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(232,224,214,0.52);
+}
+
+/* Hamburger — min 44×44px, hidden desktop, shown at 768px */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+  z-index: 110;
+}
+.hamburger span {
+  display: block;
+  width: 22px;
+  height: 1.5px;
+  background: var(--t-nav);
+  transition: transform 0.25s var(--ease), opacity 0.2s;
+  transform-origin: center;
+}
+.hamburger.open span:nth-child(1){transform:translateY(6.5px) rotate(45deg);}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
+.hamburger.open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg);}
+
+/* Mobile overlay — spec: fixed inset 0, backdrop-filter blur(16px) */
+.mobile-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(10,13,22,0.94);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  z-index: 99;
+  padding: 100px var(--site-pad) 40px;
+  flex-direction: column;
+  gap: 0;
+}
+.mobile-overlay[aria-hidden="false"] { display: flex; }
+.mobile-overlay a {
+  font-family: var(--font-ui);
+  font-size: 21px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--t-nav);
+  text-decoration: none;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(232,224,214,0.08);
+  transition: color 0.2s;
+}
+.mobile-overlay a:hover { color: rgba(232,224,214,0.85); }
+.mobile-overlay a.active {
+  color: var(--t-nav);
+  text-decoration: underline;
+  text-underline-offset: 9px;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--t-nav);
+}
+
+/* ============================================================ PAGE HEADER */
+.page-header {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: clamp(3rem,7vw,5rem) var(--site-pad) clamp(2rem,4vw,3rem);
+}
+/* Eyebrow: Inter 17px / 600 / 0.62 / letter-spacing 0.06em (spec uppercase max) */
+.page-eyebrow {
+  font-family: var(--font-ui);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--t-sub);
+  margin-bottom: 1.25rem;
+}
+/* Page title: DM Sans 50px, nav color */
+.page-title {
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 350;
+  font-size: 55px;
+  line-height: 0.8;
+  letter-spacing: -0.1px;
+  color: rgba(232,224,214,0.50);
+  margin-bottom: 1rem;
+}
+/* Description: Lora clamp(17px,1.6vw,19px) / 400 / 0.65 */
+.page-description {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(19px,1.6vw,21px);
+  color: var(--t-desc);
+  max-width: 500px;
+  line-height: 1.6;
+}
+
+/* ============================================================ CONTROLS BAR */
+.controls-bar {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 var(--site-pad) 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+/* Filter tabs: Inter 17px / 500 / 0.62, border 0.30, hover 0.45
+   Active: rgba(232,224,214,0.88) bg / #0a0d16 text */
+.filter-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.filter-tab {
+  font-family: var(--font-ui);
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--t-sub);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.5rem 1rem;
+  min-height: 44px;
+  cursor: pointer;
+  transition: all 0.18s var(--ease);
+}
+.filter-tab:hover {
+  color: var(--t-primary);
+  border-color: var(--border-hover);
+  background: rgba(232,224,214,0.06);
+}
+.filter-tab.active {
+  background: transparent;
+  color: var(--t-sub);
+  border-color: rgba(232,224,214,0.65);
+}
+
+/* Sort: Inter 17px / 500 / 0.62, border 0.30 */
+.sort-control { display:flex;align-items:center;gap:0.6rem; }
+.sort-label {
+  font-family: var(--font-ui);
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--t-sub);
+}
+.sort-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-ui);
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--t-sub);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.5rem 0.85rem;
+  min-height: 44px;
+  cursor: pointer;
+  transition: all 0.18s var(--ease);
+}
+.sort-btn:hover {
+  color: var(--t-primary);
+  border-color: var(--border-hover);
+  background: rgba(232,224,214,0.06);
+}
+.sort-arrow { display:inline-block;transition:transform 0.25s var(--ease); }
+.sort-arrow.flipped { transform:scaleY(-1); }
+
+/* ============================================================ MAIN */
+.portraits-main {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 var(--site-pad);
+}
+
+/* ============================================================ FEATURED PORTRAIT
+   Title: Lora clamp(21px,2.2vw,25px) / 500 / 0.78
+   Subtitle: Lora 17px / 400 / 0.65 — roman, no italic
+   Excerpt: Lora clamp(18px,1.8vw,20px) / 400 / 0.75
+   Place / tag / number: Inter 17px / 0.62 */
+.featured-portrait {
+  margin-bottom: 2.5rem;
+  border-radius: 3px;
+  overflow: hidden;
+  background: var(--ground-card);
+  border: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 420px;
+  cursor: pointer;
+  transition: opacity 0.3s var(--ease), border-color 0.2s var(--ease);
+}
+.featured-portrait:hover { border-color: var(--border-hover); }
+.featured-portrait.filtered-out { opacity:0.25;pointer-events:none; }
+
+.featured-img-wrap {
+  position: relative;
+  overflow: hidden;
+  background: var(--tint-a);
+}
+.featured-img-wrap img {
+  width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform 0.5s var(--ease),opacity 0.4s;
+  transform:scale(1);opacity:0;
+}
+.featured-img-wrap img.loaded { opacity:1; }
+.featured-portrait:hover .featured-img-wrap img { transform:scale(1.04); }
+
+.featured-meta {
+  padding: clamp(2rem,4vw,3rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.9rem;
+}
+.featured-tag {
+  font-family:var(--font-ui);font-size:17px;font-weight:600;
+  letter-spacing:0.06em;text-transform:uppercase;color:rgba(180,180,180,0.62);
+}
+.featured-place {
+  font-family:var(--font-body);font-size:17px;font-weight:500;
+  letter-spacing:0.02em;color:var(--t-sub);
+}
+/* Title: Lora clamp(21px,2.2vw,25px) / 500 / 0.83 */
+.featured-title {
+  font-family:var(--font-display);font-weight:500;
+  font-size:clamp(21px,2.2vw,25px);line-height:1.6;
+  letter-spacing:-0.02em;color:rgba(232,224,214,0.83);
+}
+/* Subtitle: Work Sans 17px / 500 / 0.62 */
+.featured-subtitle {
+  font-family:var(--font-body);font-weight:500;
+  font-size:17px;letter-spacing:0.02em;color:var(--t-sub);line-height:1.6;
+}
+/* Excerpt: Lora clamp(17px,1.8vw,19px) / 400 / 0.75 */
+.featured-excerpt {
+  font-family:var(--font-display);font-weight:400;
+  font-size:clamp(17px,1.8vw,19px);color:rgba(232,224,214,0.75);
+  line-height:1.6;max-width:38ch;
+}
+/* Number: Work Sans 18px / 400 / 0.66 */
+.featured-number {
+  font-family:var(--font-body);font-weight:400;
+  font-size:18px;color:rgba(232,224,214,0.66);
+}
+
+/* ============================================================ PORTRAIT GRID */
+.portrait-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+}
+
+/* ============================================================ PORTRAIT CARD
+   Title: Lora clamp(18px,1.8vw,23px) / 500 / 0.78
+   Subtitle: Lora 17px / 400 / 0.65 — roman
+   Place: Inter 17px / 500 / 0.62
+   Category: Inter 17px / 600 / 0.62
+   Number: Lora 17px / 400 / 0.62 */
+.portrait-card {
+  background: var(--ground-card);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.2s var(--ease), transform 0.25s var(--ease);
+  outline: none;
+}
+.portrait-card:focus-visible { outline:2px solid var(--blue);outline-offset:3px; }
+.portrait-card:hover { border-color:var(--border-hover);transform:translateY(-2px); }
+.portrait-card.hidden { display:none; }
+.portrait-card.fade-in { animation:cardFadeIn 0.35s var(--ease) both; }
+
+@keyframes cardFadeIn {
+  from{opacity:0;}
+  to{opacity:1;}
+}
+
+.card-img-wrap {
+  position:relative;
+  aspect-ratio:4/3;
+  overflow:hidden;
+  background:var(--tint-b);
+}
+.card-img-wrap img {
+  width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform 0.45s var(--ease),opacity 0.4s;
+  transform:scale(1);opacity:0;
+}
+.card-img-wrap img.loaded { opacity:1; }
+.portrait-card:hover .card-img-wrap img { transform:scale(1.05); }
+
+/* Skeleton shimmer */
+.skeleton {
+  position:absolute;inset:0;
+  background:linear-gradient(90deg,
+    var(--ground-lift) 0%,
+    rgba(232,224,214,0.04) 40%,
+    rgba(232,224,214,0.07) 50%,
+    rgba(232,224,214,0.04) 60%,
+    var(--ground-lift) 100%);
+  background-size:200% 100%;
+  animation:shimmer 0.9s infinite linear;
+}
+.skeleton.done{display:none;}
+@keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+
+.card-body { padding:1.1rem 1.25rem 1.3rem; }
+
+.card-place {
+  font-family:var(--font-body);font-size:17px;font-weight:500;
+  letter-spacing:0.02em;color:var(--t-sub);margin-bottom:0.5rem;
+}
+.card-title {
+  font-family:var(--font-display);font-weight:500;
+  font-size:clamp(21px,2.2vw,25px);line-height:1.6;
+  letter-spacing:-0.02em;color:rgba(232,224,214,0.83);margin-bottom:0.5rem;
+}
+/* Subtitle — Work Sans, weight 500 */
+.card-subtitle {
+  font-family:var(--font-body);font-weight:500;
+  font-size:17px;letter-spacing:0.02em;color:var(--t-sub);line-height:1.6;margin-bottom:0.5rem;
+}
+.card-meta { display:flex;align-items:center;justify-content:space-between;gap:0.5rem; }
+.card-category {
+  font-family:var(--font-ui);font-size:17px;font-weight:600;
+  letter-spacing:0.06em;text-transform:uppercase;color:rgba(180,180,180,0.62);
+}
+.card-num {
+  font-family:var(--font-body);font-weight:400;
+  font-size:18px;color:rgba(232,224,214,0.66);
+}
+
+/* ============================================================ EMPTY STATE */
+.empty-state{display:none;grid-column:1/-1;padding:4rem 0;text-align:center;}
+.empty-state.visible{display:block;}
+.empty-state p {
+  font-family:var(--font-display);font-weight:400;
+  font-size:17px;color:var(--t-sub);
+}
+
+/* ============================================================ LOAD MORE
+   Spec: Inter 17px / border 0.30 / hover 0.45 */
+.load-more-area {
+  display:flex;flex-direction:column;align-items:center;
+  gap:1rem;padding-bottom:clamp(3rem,6vw,5rem);
+}
+.count-label {
+  font-family:var(--font-ui);font-size:17px;font-weight:400;
+  letter-spacing:0.02em;color:var(--t-sub);
+}
+.load-more-btn {
+  font-family:var(--font-ui);font-size:16px;font-weight:500;
+  letter-spacing:0.06em;text-transform:uppercase;
+  color:var(--t-archive);background:transparent;
+  border:1px solid var(--border);border-radius:3px;
+  padding:0.75rem 2.5rem;min-height:44px;
+  cursor:pointer;transition:all 0.2s var(--ease);
+}
+.load-more-btn:hover:not(:disabled) {
+  color:var(--t-primary);border-color:var(--border-hover);
+  background:rgba(232,224,214,0.06);
+}
+.load-more-btn:disabled {
+  color:var(--t-sub);border-color:rgba(232,224,214,0.15);cursor:default;
+}
+
+/* ============================================================ FOOTER
+   Logotype: Lora 21px / 600 / 0.62 — roman
+   Footer line: Inter 17px / 400 / 0.62
+   Padding: 100px top / 40px sides / 48px bottom + safe area */
+footer {
+  border-top: none;
+  padding:100px var(--site-pad) calc(48px + env(safe-area-inset-bottom,0px)) var(--site-pad);
+  position: relative;
+}
+footer::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(232,224,214,0.25) 8%,
+    rgba(232,224,214,0.55) 15%,
+    rgba(232,224,214,0.20) 24%,
+    rgba(232,224,214,0.48) 34%,
+    rgba(232,224,214,0.60) 44%,
+    rgba(232,224,214,0.18) 54%,
+    rgba(232,224,214,0.52) 63%,
+    rgba(232,224,214,0.42) 74%,
+    rgba(232,224,214,0.16) 83%,
+    rgba(232,224,214,0.35) 90%,
+    transparent 100%);
+}
+.footer-inner {
+  max-width:var(--max-w);margin:0 auto;
+  display:flex;align-items:flex-end;justify-content:space-between;
+  gap:1.5rem;flex-wrap:wrap;
+}
+.footer-left{display:flex;flex-direction:column;gap:0.4rem;}
+.footer-wordmark {
+  font-family:var(--font-display);font-weight:600;
+  font-size:21px;letter-spacing:0.03em;color:var(--t-sub);
+}
+.footer-copy {
+  font-family:var(--font-ui);font-size:17px;font-weight:400;
+  letter-spacing:0.02em;color:var(--t-sub);
+}
+
+/* ============================================================ RESPONSIVE
+   Three required breakpoints: 1024 / 768 / 480 */
+
+/* 1024px — tablet landscape */
+@media (max-width:1024px) {
+  .portrait-grid { grid-template-columns:repeat(2,1fr); }
+  .featured-portrait { min-height:320px; }
+}
+
+/* 768px — tablet portrait: nav → hamburger */
+@media (max-width:768px) {
+  :root { --site-pad: 24px; }
+  .nav-links { display:none; }
+  .hamburger { display:flex; }
+
+  .featured-portrait { grid-template-columns:1fr; }
+  .featured-img-wrap { aspect-ratio:16/9;min-height:unset; }
+
+  .controls-bar { flex-direction:column;align-items:flex-start; }
+  .portrait-grid { grid-template-columns:1fr; }
+
+  .footer-inner { flex-direction:column;align-items:flex-start; }
+
+  /* Tighten card padding on mobile */
+  .featured-meta {
+    padding: 1rem;
+  }
+  .card-body {
+    padding: 0.75rem 0.85rem 0.85rem;
+  }
+  :root { --site-pad: 16px; }
+}
+
+/* 480px — phone: single column, wrapping filter tabs */
+@media (max-width:480px) {
+  .portrait-grid { grid-template-columns:1fr; }
+
+  .filter-tabs {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="wordmark">Oyparaploo</a>
+    <ul class="nav-links">
+      <li><a href="/writings">Writing</a></li>
+      <li><a href="/portraits" class="active">Portraits</a></li>
+      <li><a href="/practice">Practice</a></li>
+      <li><a href="/dispatches">Dispatches</a></li>
+    </ul>
+    <button class="hamburger" aria-label="Menu" aria-expanded="false" id="hamburger-btn">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="accent-rule"></div>
+</nav>
+
+<!-- Mobile overlay -->
+<div class="mobile-overlay" id="mobile-overlay" aria-hidden="true">
+  <a href="/writings">Writing</a>
+  <a href="/portraits" class="active">Portraits</a>
+  <a href="/practice">Practice</a>
+  <a href="/dispatches">Dispatches</a>
+</div>
+
+<!-- PAGE HEADER -->
+<header class="page-header">
+  <p class="page-eyebrow">Musicological witness series</p>
+  <h1 class="page-title">Portraits</h1>
+  <p class="page-description">Fifty-five studies in listening. Each portrait enters a musician's world through place, voice, and the question of what gets passed down.</p>
+</header>
+
+<!-- CONTROLS -->
+<div class="controls-bar">
+  <div class="filter-tabs" role="tablist" aria-label="Filter portraits by category">
+    <button class="filter-tab active" data-filter="all" role="tab" aria-selected="true">All</button>
+    <button class="filter-tab" data-filter="Witness" role="tab" aria-selected="false">Witness</button>
+    <button class="filter-tab" data-filter="Declaration" role="tab" aria-selected="false">Declaration</button>
+    <button class="filter-tab" data-filter="Origin" role="tab" aria-selected="false">Origin</button>
+    <button class="filter-tab" data-filter="Conversation" role="tab" aria-selected="false">Conversation</button>
+    <button class="filter-tab" data-filter="Unfolding" role="tab" aria-selected="false">Unfolding</button>
+  </div>
+  <div class="sort-control">
+    <span class="sort-label">Sort</span>
+    <button class="sort-btn" id="sort-btn" aria-label="Toggle sort order">
+      <span id="sort-label-text">By number</span>
+      <span class="sort-arrow" id="sort-arrow">↓</span>
+    </button>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main class="portraits-main">
+
+  <article class="featured-portrait" data-category="Witness" tabindex="0" aria-label="Featured portrait: Mississippi John Hurt">
+    <div class="featured-img-wrap">
+      <div class="skeleton" id="feat-skeleton"></div>
+      <img src="/images/portraits/01-mississippi-john-hurt.jpg" alt="Mississippi John Hurt"
+           onload="this.classList.add('loaded');document.getElementById('feat-skeleton').classList.add('done')">
+    </div>
+    <div class="featured-meta">
+      <span class="featured-tag">Witness</span>
+      <span class="featured-place">Avalon, Mississippi</span>
+      <h2 class="featured-title">Mississippi John Hurt</h2>
+      <p class="featured-subtitle">Keeps the Slow Time</p>
+      <p class="featured-excerpt">He played for dances and for himself. The distance between those two things was never very large. Avalon was always where he was going, even when he left.</p>
+      <span class="featured-number">Portrait No. 01</span>
+    </div>
+  </article>
+
+  <div class="portrait-grid" id="portrait-grid">
+    <div class="empty-state" id="empty-state">
+      <p>Nothing here yet — this category is still filling in.</p>
+    </div>
+  </div>
+
+  <div class="load-more-area">
+    <span class="count-label" id="count-label">Showing 0 of 55</span>
+    <button class="load-more-btn" id="load-more-btn">Load more</button>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-left">
+      <span class="footer-wordmark">OyPARáPLoO!</span>
+      <span class="footer-copy">Twin Cities</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+const PORTRAITS = [
+  {n:"01",slug:"mississippi-john-hurt",   place:"Avalon, Mississippi",          title:"Mississippi John Hurt",        subtitle:"Keeps the Slow Time",               category:"Witness",   featured:true},
+  {n:"02",slug:"elizabeth-cotten",        place:"Carrboro, North Carolina",     title:"Elizabeth Cotten",             subtitle:"The Left-Hand Question",            category:"Origin"},
+  {n:"03",slug:"ali-farka-toure",         place:"Niafunké, Mali",               title:"Ali Farka Touré",              subtitle:"River Logic",                       category:"Witness"},
+  {n:"04",slug:"hazel-dickens",           place:"Mercer County, West Virginia", title:"Hazel Dickens",                subtitle:"What the Union Asks",               category:"Declaration"},
+  {n:"05",slug:"john-fahey",              place:"Takoma Park, Maryland",        title:"John Fahey",                   subtitle:"American Primitive / American Myth", category:"Unfolding"},
+  {n:"06",slug:"dorothy-ashby",           place:"Detroit, Michigan",            title:"Dorothy Ashby",                subtitle:"The Harp Nobody Counted",           category:"Witness"},
+  {n:"07",slug:"shirley-collins",         place:"Hastings, East Sussex",        title:"Shirley Collins",              subtitle:"The Field Recording That Stayed",   category:"Origin"},
+  {n:"08",slug:"bukka-white",             place:"Houston, Mississippi",         title:"Bukka White",                  subtitle:"Sky Songs, Ground Songs",           category:"Witness"},
+  {n:"09",slug:"connie-converse",         place:"Concord, New Hampshire",       title:"Connie Converse",              subtitle:"Before Anyone Was Listening",       category:"Unfolding"},
+  {n:"10",slug:"william-onyeabor",        place:"Enugu, Nigeria",               title:"William Onyeabor",             subtitle:"The Factory and the Groove",        category:"Declaration"},
+  {n:"11",slug:"moondog",                 place:"New York City, New York",      title:"Moondog",                      subtitle:"Standing in the Street",            category:"Origin"},
+  {n:"12",slug:"alice-gerrard",           place:"Burlington, Vermont",          title:"Alice Gerrard",                subtitle:"Inheritance and Insistence",        category:"Conversation"},
+  {n:"13",slug:"lonnie-johnson",          place:"New Orleans, Louisiana",       title:"Lonnie Johnson",               subtitle:"The Guitar as Evidence",            category:"Witness"},
+  {n:"14",slug:"ruth-crawford-seeger",    place:"East Liverpool, Ohio",         title:"Ruth Crawford Seeger",         subtitle:"Dissonance as Precision",           category:"Declaration"},
+  {n:"15",slug:"otis-redding",            place:"Dawson, Georgia",              title:"Otis Redding",                 subtitle:"The Weight of That Voice",          category:"Witness"},
+  {n:"16",slug:"jean-ritchie",            place:"Viper, Kentucky",              title:"Jean Ritchie",                 subtitle:"What the Mountain Gave Back",       category:"Origin"},
+  {n:"17",slug:"captain-beefheart",       place:"Glendale, California",         title:"Captain Beefheart",            subtitle:"Painting Against the Frame",        category:"Unfolding"},
+  {n:"18",slug:"mavis-staples",           place:"Chicago, Illinois",            title:"Mavis Staples",                subtitle:"The Church and the Movement",       category:"Declaration"},
+  {n:"19",slug:"bola-sete",               place:"Rio de Janeiro, Brazil",       title:"Bola Sete",                    subtitle:"Between Two Audiences",             category:"Conversation"},
+  {n:"20",slug:"odetta",                  place:"Birmingham, Alabama",          title:"Odetta",                       subtitle:"Voice as Landscape",                category:"Witness"},
+  {n:"21",slug:"skip-james",              place:"Bentonia, Mississippi",        title:"Skip James",                   subtitle:"The Minor Key Problem",             category:"Origin"},
+  {n:"22",slug:"king-sunny-ade",          place:"Ondo, Nigeria",                title:"King Sunny Adé",               subtitle:"The Guitar Never Stops",            category:"Unfolding"},
+  {n:"23",slug:"bessie-smith",            place:"Chattanooga, Tennessee",       title:"Bessie Smith",                 subtitle:"The Tent and the Stage",            category:"Declaration"},
+  {n:"24",slug:"vashti-bunyan",           place:"London, England",              title:"Vashti Bunyan",                subtitle:"The Song That Came Back",           category:"Unfolding"},
+  {n:"25",slug:"blind-willie-johnson",    place:"Marlin, Texas",                title:"Blind Willie Johnson",         subtitle:"Sacred Steel",                      category:"Witness"},
+  {n:"26",slug:"marian-anderson",         place:"Philadelphia, Pennsylvania",   title:"Marian Anderson",              subtitle:"The Lincoln Memorial Step",         category:"Declaration"},
+  {n:"27",slug:"ry-cooder",               place:"Los Angeles, California",      title:"Ry Cooder",                    subtitle:"Who He Listens To",                 category:"Conversation"},
+  {n:"28",slug:"cesaria-evora",           place:"Mindelo, Cape Verde",          title:"Cesária Évora",                subtitle:"Barefoot in the Harbor",            category:"Origin"},
+  {n:"29",slug:"albert-ayler",            place:"Cleveland, Ohio",              title:"Albert Ayler",                 subtitle:"The Cry as Structure",              category:"Declaration"},
+  {n:"30",slug:"nina-simone",             place:"Tryon, North Carolina",        title:"Nina Simone",                  subtitle:"The Piano and the Question",        category:"Witness"},
+  {n:"31",slug:"leo-kottke",              place:"Athens, Georgia",              title:"Leo Kottke",                   subtitle:"Twelve Strings and No Theory",      category:"Origin"},
+  {n:"32",slug:"joao-gilberto",           place:"Juazeiro, Bahia",              title:"João Gilberto",                subtitle:"The Quiet Revolution",              category:"Unfolding"},
+  {n:"33",slug:"june-tabor",              place:"Warwick, England",             title:"June Tabor",                   subtitle:"Severity as Style",                 category:"Declaration"},
+  {n:"34",slug:"ray-charles",             place:"Albany, Georgia",              title:"Ray Charles",                  subtitle:"The Ear That Crossed Everything",   category:"Conversation"},
+  {n:"35",slug:"bobi-wine",               place:"Kampala, Uganda",              title:"Bobi Wine",                    subtitle:"The Ghetto and the Parliament",     category:"Declaration"},
+  {n:"36",slug:"alice-coltrane",          place:"Detroit, Michigan",            title:"Alice Coltrane",               subtitle:"After John, Toward the Infinite",   category:"Unfolding"},
+  {n:"37",slug:"doc-watson",              place:"Deep Gap, North Carolina",     title:"Doc Watson",                   subtitle:"Flat Pick as Mother Tongue",        category:"Origin"},
+  {n:"38",slug:"miriam-makeba",           place:"Johannesburg, South Africa",   title:"Miriam Makeba",                subtitle:"The Passport and the Song",         category:"Declaration"},
+  {n:"39",slug:"fred-mcdowell",           place:"Rossville, Tennessee",         title:"Fred McDowell",                subtitle:"I Do Not Play No Rock and Roll",    category:"Witness"},
+  {n:"40",slug:"astrud-gilberto",         place:"Petrópolis, Brazil",           title:"Astrud Gilberto",              subtitle:"The Accent They Heard",             category:"Conversation"},
+  {n:"41",slug:"blind-lemon-jefferson",   place:"Coutchman, Texas",             title:"Blind Lemon Jefferson",        subtitle:"The Walking Bass Before the Name",  category:"Origin"},
+  {n:"42",slug:"charley-patton",          place:"Edwards, Mississippi",         title:"Charley Patton",               subtitle:"The Showman and the Source",        category:"Witness"},
+  {n:"43",slug:"bothy-band",              place:"County Donegal, Ireland",      title:"The Bothy Band",               subtitle:"Session as Form",                   category:"Conversation"},
+  {n:"44",slug:"howlin-wolf",             place:"West Point, Mississippi",      title:"Howlin' Wolf",                 subtitle:"The Body in the Room",              category:"Witness"},
+  {n:"45",slug:"ravi-shankar",            place:"Varanasi, India",              title:"Ravi Shankar",                 subtitle:"The Raga as Argument",              category:"Declaration"},
+  {n:"46",slug:"norma-waterson",          place:"Hull, England",                title:"Norma Waterson",               subtitle:"Family Music, Inherited Weight",    category:"Origin"},
+  {n:"47",slug:"compay-segundo",          place:"Santa Clara, Cuba",            title:"Compay Segundo",               subtitle:"The Song Remembered at 90",         category:"Unfolding"},
+  {n:"48",slug:"ali-hassan-kuban",        place:"Nubia, Sudan",                 title:"Ali Hassan Kuban",             subtitle:"The Nubian Crossroads",             category:"Origin"},
+  {n:"49",slug:"carolyn-hester",          place:"Waco, Texas",                  title:"Carolyn Hester",               subtitle:"The Session That Changed Rooms",    category:"Conversation"},
+  {n:"50",slug:"bukky-leo",               place:"Lagos, Nigeria",               title:"Bukky Leo",                    subtitle:"Talking Drum Testimony",            category:"Declaration"},
+  {n:"51",slug:"odetta-2",                place:"Birmingham, Alabama",          title:"Odetta",                       subtitle:"The Second Sitting",                category:"Witness"},
+  {n:"52",slug:"sandy-denny",             place:"London, England",              title:"Sandy Denny",                  subtitle:"Who Knows Where",                   category:"Unfolding"},
+  {n:"53",slug:"henry-thomas",            place:"Upshur County, Texas",         title:"Henry Thomas",                 subtitle:"The Quills and the Track",          category:"Origin"},
+  {n:"54",slug:"nat-adderley",            place:"Tampa, Florida",               title:"Nat Adderley",                 subtitle:"In the Shadow of the Horn",         category:"Conversation"},
+  {n:"55",slug:"noah-lewis",              place:"Calhoun County, Mississippi",  title:"Noah Lewis",                   subtitle:"The Jug and the Harmonica",         category:"Witness"},
+];
+
+let activeFilter = 'all';
+let sortMode = 'number';
+let shown = 0;
+const PAGE_INIT = 9;
+const PAGE_MORE = 7;
+
+const grid       = document.getElementById('portrait-grid');
+const emptyState = document.getElementById('empty-state');
+const countLabel = document.getElementById('count-label');
+const loadBtn    = document.getElementById('load-more-btn');
+const sortBtn    = document.getElementById('sort-btn');
+const sortLbl    = document.getElementById('sort-label-text');
+const sortArrow  = document.getElementById('sort-arrow');
+const filterTabs = document.querySelectorAll('.filter-tab');
+const featCard   = document.querySelector('.featured-portrait');
+const hamburger  = document.getElementById('hamburger-btn');
+const overlay    = document.getElementById('mobile-overlay');
+
+// Featured skeleton timeout
+setTimeout(function(){
+  var s = document.getElementById('feat-skeleton');
+  if(s && !s.classList.contains('done')) s.classList.add('done');
+}, 900);
+
+function featuredVisible(){
+  return activeFilter === 'all' || activeFilter === 'Witness';
+}
+
+function getFiltered(){
+  var list = PORTRAITS.filter(function(p){ return !p.featured; });
+  if(activeFilter !== 'all') list = list.filter(function(p){ return p.category === activeFilter; });
+  if(sortMode === 'place'){
+    list = list.slice().sort(function(a,b){ return a.place.localeCompare(b.place); });
+  } else {
+    list = list.slice().sort(function(a,b){ return parseInt(a.n) - parseInt(b.n); });
+  }
+  return list;
+}
+
+function buildCard(p, delay){
+  var card = document.createElement('article');
+  card.className = 'portrait-card fade-in';
+  card.setAttribute('data-category', p.category);
+  card.setAttribute('tabindex', '0');
+  card.setAttribute('aria-label', 'Portrait: ' + p.title);
+  if(delay) card.style.animationDelay = delay + 'ms';
+
+  card.innerHTML =
+    '<div class="card-img-wrap">' +
+      '<div class="skeleton" id="sk-' + p.slug + '"></div>' +
+      '<img src="/images/portraits/' + p.n + '-' + p.slug + '.jpg" alt="' + p.title + '" ' +
+           'onload="this.classList.add(\'loaded\');var s=document.getElementById(\'sk-' + p.slug + '\');if(s)s.classList.add(\'done\')">' +
+    '</div>' +
+    '<div class="card-body">' +
+      '<p class="card-place">' + p.place + '</p>' +
+      '<h3 class="card-title">' + p.title + '</h3>' +
+      '<p class="card-subtitle">' + p.subtitle + '</p>' +
+      '<div class="card-meta">' +
+        '<span class="card-category">' + p.category + '</span>' +
+        '<span class="card-num">No. ' + p.n + '</span>' +
+      '</div>' +
+    '</div>';
+
+  setTimeout(function(){
+    var sk = card.querySelector('.skeleton');
+    if(sk && !sk.classList.contains('done')) sk.classList.add('done');
+    var img = card.querySelector('img');
+    if(img && !img.classList.contains('loaded')) img.classList.add('loaded');
+  }, 900 + (delay || 0));
+
+  return card;
+}
+
+function updateCount(showing, total){
+  countLabel.textContent = 'Showing ' + showing + ' of ' + total;
+}
+
+function updateLoadBtn(shownGrid, totalGrid){
+  if(shownGrid >= totalGrid){
+    loadBtn.disabled = true;
+    loadBtn.textContent = 'All shown';
+  } else {
+    loadBtn.disabled = false;
+    loadBtn.textContent = 'Load more';
+  }
+}
+
+function render(){
+  Array.from(grid.querySelectorAll('.portrait-card')).forEach(function(c){ c.remove(); });
+  shown = 0;
+
+  var filtered = getFiltered();
+  var featVis = featuredVisible();
+
+  featCard.classList.toggle('filtered-out', !featVis);
+
+  var totalInFilter = filtered.length + (featVis ? 1 : 0);
+
+  if(filtered.length === 0 && !featVis){
+    emptyState.classList.add('visible');
+    updateCount(0, 0);
+    loadBtn.disabled = true;
+    loadBtn.textContent = 'Load more';
+    return;
+  }
+
+  emptyState.classList.remove('visible');
+
+  var gridInit = Math.min(PAGE_INIT - (featVis ? 1 : 0), filtered.length);
+  for(var i = 0; i < gridInit; i++){
+    grid.appendChild(buildCard(filtered[i]));
+  }
+  shown = gridInit;
+
+  updateCount(shown + (featVis ? 1 : 0), totalInFilter);
+  updateLoadBtn(shown, filtered.length);
+}
+
+function loadMore(){
+  var filtered = getFiltered();
+  var toAdd = filtered.slice(shown, shown + PAGE_MORE);
+  toAdd.forEach(function(p, i){ grid.appendChild(buildCard(p, i * 80)); });
+  shown += toAdd.length;
+  var featVis = featuredVisible();
+  updateCount(shown + (featVis ? 1 : 0), filtered.length + (featVis ? 1 : 0));
+  updateLoadBtn(shown, filtered.length);
+}
+
+filterTabs.forEach(function(tab){
+  tab.addEventListener('click', function(){
+    filterTabs.forEach(function(t){ t.classList.remove('active'); t.setAttribute('aria-selected','false'); });
+    tab.classList.add('active');
+    tab.setAttribute('aria-selected','true');
+    activeFilter = tab.dataset.filter;
+    render();
+  });
+});
+
+sortBtn.addEventListener('click', function(){
+  sortMode = sortMode === 'number' ? 'place' : 'number';
+  sortLbl.textContent = sortMode === 'number' ? 'By number' : 'By place';
+  sortArrow.classList.toggle('flipped', sortMode === 'place');
+  render();
+});
+
+loadBtn.addEventListener('click', loadMore);
+
+// Hamburger — body scroll lock, aria, auto-close on link
+hamburger.addEventListener('click', function(){
+  var isOpen = hamburger.classList.toggle('open');
+  overlay.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+  hamburger.setAttribute('aria-expanded', isOpen);
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+});
+
+overlay.querySelectorAll('a').forEach(function(link){
+  link.addEventListener('click', function(){
+    hamburger.classList.remove('open');
+    overlay.setAttribute('aria-hidden','true');
+    hamburger.setAttribute('aria-expanded','false');
+    document.body.style.overflow = '';
+  });
+});
+
+render();
+</script>
+</body>
+</html>
